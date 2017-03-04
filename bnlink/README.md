@@ -1,6 +1,6 @@
 # bnlink
  
-This script is inspired by idalink [1]
+This script is inspired by idalink [1].
 With this plugin the scripting api of Binary Ninja can be accessed from all your python scripts.
 If you search for something stable and fast, please consider buying a enterprise license. This
 is probably neither stable nor fast ;-)
@@ -11,7 +11,7 @@ is probably neither stable nor fast ;-)
 cp pbnlink.py ~/.binaryninja/plugins/ 
 ```
 
-# Use
+# Usage
 
 First go to the Binary Ninja GUI and start the plugin (Tools->Start bnlink).
 In you script import bnlink like following:
