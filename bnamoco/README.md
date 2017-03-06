@@ -1,4 +1,4 @@
-Brings amoco [1] to Binary Ninja.
+Brings [amoco](https://github.com/bdcht/amoco) to Binary Ninja.
 
 # Install
 ```bash
@@ -28,9 +28,20 @@ python setup.py install
 See examples section and the end of __init__.py 
 
 # Examples
+
+## Import and get amoco basic block object
 ![amoco_basic_block](/images/amoco_basic_blocks.png)
+
+## Get amoco mapper object
 ![amoco_mapper](/images/amoco_mapper.png)
+
+## Get amoco memory area object
 ![amoco_memory_area](/images/amoco_memory_area.png)
 
 
-[1] https://github.com/bdcht/amoco
+# TODO
+- [ ] Create html/plain report 
+- [ ] Add comments option to Binary Ninja view
+- [ ] Export CFG info's
+
+
