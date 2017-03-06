@@ -1,6 +1,5 @@
 Brings amoco [1] to Binary Ninja.
 
-
 # Install
 ```bash
 # copy plugin to plugin folder
@@ -26,6 +25,12 @@ python setup.py install
 ```
 
 # Usage
-...
+See examples section and the end of __init__.py 
+
+# Examples
+![amoco_basic_block](/images/amoco_basic_blocks.png)
+![amoco_mapper](/images/amoco_mapper.png)
+![amoco_memory_area](/images/amoco_memory_area.png)
+
 
 [1] https://github.com/bdcht/amoco
