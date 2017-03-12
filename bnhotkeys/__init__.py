@@ -21,12 +21,31 @@ except:
     bnlink_connection = bnlink.connect()
     bn = bnlink_connection.root.getmodule('binaryninja')
 
+# import some plugins if exists
+try:
+    import bookmarks
+except:
+    bookmarks = False
+
+try:
+    import binaryninja_radare2 as bnr2
+except:
+    bnr2 = False
+
+try:
+    import pbnlink as bnl
+except:
+    bnl = False
+
 
 class UserTask:
-
     def __init__(self, bv, hotkey):
         self.bv = bv
         self.hotkey = hotkey
+        self.default_bookmarks_file = os.path.join(
+            os.path.dirname(self.bv.file.filename),
+            os.path.basename(self.bv.file.filename).replace("bndb", "bnbm")
+        )
 
     def test_task(self):
         bn.log.log_alert(hex(self.bv.offset))
@@ -38,8 +57,40 @@ class UserTask:
     def reload_config(self):
         self.hotkey.load_config(os.path.expanduser("~/.binaryninja/plugins/bnhotkeys/config.conf"))
 
+    def create_bookmark(self):
+        if not bookmarks:
+            return
+        bookmarks.create_bookmark(self.bv, self.bv.offset)
+        try:
+            with open(self.default_bookmarks_file, "w") as bookmarks_file:
+                pickle.dump(
+                    self.bv.file.session_data['bookmarks'],
+                    bookmarks_file
+                )
+        except:
+            bn.log_alert("Error Saving Bookmarks")
 
+    def list_bookmarks(self):
+        if not bookmarks:
+            return
+        if not self.bv.file.session_data.get('bookmarks', False):
+            # no bookmarks loaded try to load default bookmarks
+            try:
+                with open(self.default_bookmarks_file, "r") as bookmarks_file:
+                    self.bv.file.session_data['bookmarks'] = pickle.loads(bookmarks_file.read())
+            except:
+                bn.log.log_error("No default bookmarks file found ({})".format(self.default_bookmarks_file))
+        bookmarks.goto_bookmark(self.bv)
 
+    def radare2(self):
+        if not bnr2:
+            return
+        bnr2.spawn(self.bv)
+
+    def bnlink(self):
+        if not bnl:
+            return
+        bnl.run_task(self.bv)
 
 
 class bnhotkeys_task(bn.plugin.BackgroundTaskThread):
