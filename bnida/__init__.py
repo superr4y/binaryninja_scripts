@@ -11,7 +11,10 @@ class ida_task(bn.plugin.BackgroundTaskThread):
 
     def run(self):
         bv = self.bv
-        arch = bv.arch.address_size*8
+        try:
+            arch = bv.arch.address_size*8
+        except:
+            arch = 32
         filename = bv.file.filename
         ida = 'idaq' if arch == 32 else 'idaq64'
         #ida_script = path.join(path.dirname(path.abspath(sys.argv[0])), "ida.py")
