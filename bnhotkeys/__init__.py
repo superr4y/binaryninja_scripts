@@ -9,8 +9,16 @@ import pickle
 from pynput import keyboard
 from subprocess import Popen, PIPE
 import re, os
+import time
 
 DEBUG = False
+try:
+    sys.path.append("/home/user/amoco/framework")
+    import bnimp.bnimporter as bnimporter
+    import thread
+    import requests
+except:
+    bnimporter = False
 
 try:
     import binaryninja as bn
@@ -38,6 +46,18 @@ except:
     bnl = False
 
 
+def init_bnimporter(file_name, bv):
+    try:
+        bnimporter.IMP = bnimporter.BNImporter(file_name, bv)
+    except:
+        print "file name not found: %s"%(file_name)
+    try:
+        bnimporter.www.run()
+    except:
+        print "no way"
+
+
+
 class UserTask:
     def __init__(self, bv, hotkey):
         self.bv = bv
@@ -46,6 +66,7 @@ class UserTask:
             os.path.dirname(self.bv.file.filename),
             os.path.basename(self.bv.file.filename).replace("bndb", "bnbm")
         )
+        self._bnimporter = None
 
     def test_task(self):
         bn.log.log_alert(hex(self.bv.offset))
@@ -91,6 +112,16 @@ class UserTask:
         if not bnl:
             return
         bnl.run_task(self.bv)
+
+    def bnimporter(self):
+        if not bnimporter:
+            return
+        if bnimporter.IMP is None:
+            file_name = bn.interaction.get_open_filename_input("Open UStack DB file", "db")
+            thread.start_new_thread(init_bnimporter, (file_name, self.bv))
+            time.sleep(1)
+        # only communicate over web server because sqlalchemy does not like multi thread access
+        requests.get("http://127.0.0.1:5000/menu")
 
 
 class bnhotkeys_task(bn.plugin.BackgroundTaskThread):
